@@ -10,6 +10,7 @@ base {
 
 dependencies {
     implementation project(":core")
+    implementation "dev.latvian.mods:kubejs-neoforge:${kubejs_version}"
 }
 
 neoForge {
@@ -43,6 +44,8 @@ processResources {
         mod_name         : mod_name,
         mod_author       : mod_author,
         mod_description  : mod_description,
+        kubejs_version   : kubejs_version,
+        rhino_version    : rhino_version,
         neoforge_version : neoforge_version,
         minecraft_version: minecraft_version
     ]
