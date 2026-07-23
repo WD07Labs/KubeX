@@ -1,0 +1,70 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.75'
+}
+
+base {
+    archivesName = "${archives_base_name}-neoforge"
+}
+
+dependencies {
+    implementation project(":core")
+}
+
+neoForge {
+    version = project.neoforge_version
+
+    mods {
+        kubex {
+            sourceSet sourceSets.main
+        }
+    }
+
+    parchment {
+        minecraftVersion = parchment_mc_version
+        mappingsVersion = parchment_version
+    }
+
+    runs {
+        client {
+            client()
+        }
+        server {
+            server()
+        }
+    }
+}
+
+processResources {
+    def toReplace = [
+        version          : project.version,
+        mod_id           : mod_id,
+        mod_name         : mod_name,
+        mod_author       : mod_author,
+        mod_description  : mod_description,
+        neoforge_version : neoforge_version,
+        minecraft_version: minecraft_version
+    ]
+
+    inputs.properties toReplace
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand toReplace
+    }
+}
+
+jar {
+    from(project(":core").sourceSets.main.output)
+
+    manifest {
+        attributes([
+            "Specification-Title"     : mod_id,
+            "Specification-Vendor"    : mod_author,
+            "Specification-Version"   : "1",
+            "Implementation-Title"    : project.name,
+            "Implementation-Version"  : version,
+            "Implementation-Vendor"   : mod_author,
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}

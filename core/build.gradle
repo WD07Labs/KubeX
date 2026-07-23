@@ -1,0 +1,17 @@
+plugins {
+    id 'java-library'
+}
+
+base {
+    archivesName = "${core_archives_base_name}"
+}
+
+dependencies {
+    api("dev.latvian.mods:rhino:${rhino_version}") { transitive(false) }
+    testImplementation(platform("org.junit:junit-bom:5.10.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+}
+
+test {
+    useJUnitPlatform()
+}

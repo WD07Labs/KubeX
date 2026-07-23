@@ -1,0 +1,27 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+license = "All Rights Reserved"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${version}"
+displayName = "${mod_name}"
+displayTest = "IGNORE_SERVER_VERSION"
+authors = "${mod_author}"
+description = '''
+${mod_description}
+'''
+
+[[dependencies.kubex]]
+modId = "neoforge"
+mandatory = true
+versionRange = "[${neoforge_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.kubex]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraft_version},)"
+ordering = "NONE"
+side = "BOTH"
