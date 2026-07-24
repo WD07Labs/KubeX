@@ -40,18 +40,18 @@ public final class KubeXCommands {
                 Commands.literal("init")
                 .then(Commands.literal("js").executes(context -> init(context.getSource(), KubeXInitMode.JS)))
                 .then(Commands.literal("ts").executes(context -> init(context.getSource(), KubeXInitMode.TS)))
-            )
-            .then(
+            ).then(
                 Commands.literal("sync")
                 .executes(context -> sync(context.getSource()))
-            )
-            .then(
+            ).then(
+                Commands.literal("build")
+                .executes(context -> build(context.getSource()))
+            ).then(
                 Commands.literal("debug")
                 .executes(context -> toggleDebug(context.getSource()))
                 .then(Commands.literal("on").executes(context -> setDebug(context.getSource(), true)))
                 .then(Commands.literal("off").executes(context -> setDebug(context.getSource(), false)))
-            )
-            .then(
+            ).then(
                 Commands.literal("doctor")
                 .then(Commands.argument("position", StringArgumentType.greedyString())
                 .executes(context -> doctorAuto(context.getSource(), StringArgumentType.getString(context, "position"))))
@@ -92,10 +92,28 @@ public final class KubeXCommands {
                 () -> Component.literal("[KubeX] Initialized " + mode.id() + " workspace: " + result.workspaceRoot()),
                 false
             );
-            source.sendSuccess(() -> Component.literal("[KubeX] Next: edit kubex/src/... then run esbuild.config.mjs"), false);
+            source.sendSuccess(() -> Component.literal("[KubeX] Next: edit kubex/src/... then run /kubex build"), false);
             return 1;
         } catch (Exception exception) {
             source.sendFailure(Component.literal("[KubeX] Init failed: " + failureMessage(exception)));
+            return 0;
+        }
+    }
+
+    private int build(CommandSourceStack source) {
+        try {
+            source.sendSuccess(() -> Component.literal("[KubeX] Running workspace build..."), false);
+
+            var result = core.buildWorkspace(source.getServer().getServerDirectory());
+            if(!result.success()) {
+                source.sendFailure(Component.literal("[KubeX] Build failed: " + result.message()));
+                return 0;
+            }
+
+            source.sendSuccess(() -> Component.literal("[KubeX] " + result.message()), false);
+            return sync(source);
+        } catch (Exception exception) {
+            source.sendFailure(Component.literal("[KubeX] Build failed: " + failureMessage(exception)));
             return 0;
         }
     }

@@ -4,6 +4,8 @@ import com.ourgram.kubex.sourcemap.KubeXSourceMapLookupResult;
 import com.ourgram.kubex.sourcemap.KubeXSourceMapService;
 import com.ourgram.kubex.workspace.KubeXDebugModeService;
 import com.ourgram.kubex.workspace.KubeXInitMode;
+import com.ourgram.kubex.workspace.KubeXWorkspaceBuildResult;
+import com.ourgram.kubex.workspace.KubeXWorkspaceBuildService;
 import com.ourgram.kubex.workspace.KubeXWorkspaceInitResult;
 import com.ourgram.kubex.workspace.KubeXWorkspaceInitializer;
 import com.ourgram.kubex.workspace.KubeXWorkspaceSyncResult;
@@ -14,6 +16,7 @@ public final class KubeXCore {
     private final KubeXWorkspaceInitializer workspaceInitializer;
     private final KubeXCompiler compiler;
     private final KubeXWorkspaceSyncService workspaceSyncService;
+    private final KubeXWorkspaceBuildService workspaceBuildService;
     private final KubeXSourceMapService sourceMapService;
     private final KubeXDebugModeService debugModeService;
 
@@ -22,6 +25,7 @@ public final class KubeXCore {
         this.compiler = new KubeXCompiler();
         this.debugModeService = new KubeXDebugModeService();
         this.workspaceSyncService = new KubeXWorkspaceSyncService(compiler, debugModeService);
+        this.workspaceBuildService = new KubeXWorkspaceBuildService();
         this.sourceMapService = new KubeXSourceMapService();
     }
 
@@ -39,6 +43,10 @@ public final class KubeXCore {
 
     public KubeXWorkspaceInitResult initializeWorkspace(java.nio.file.Path gameRoot, KubeXInitMode mode) {
         return workspaceInitializer.initialize(gameRoot, mode);
+    }
+
+    public KubeXWorkspaceBuildResult buildWorkspace(java.nio.file.Path gameRoot) {
+        return workspaceBuildService.build(gameRoot);
     }
 
     public KubeXWorkspaceSyncResult syncWorkspace(java.nio.file.Path gameRoot) {
